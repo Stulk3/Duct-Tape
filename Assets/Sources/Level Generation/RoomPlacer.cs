@@ -2,73 +2,86 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RoomPlacer : MonoBehaviour
 {
-    [Header("Level Size")]
-    [SerializeField] private Room[] _roomPresets;
-    [SerializeField] private Room _startingRoom;
-    [SerializeField] private int _roomCount;
+    public Room[] RoomPrefabs;
+    public Room StartingRoom;
 
-    [Header("Level Size")]
-    [SerializeField] private int _levelX;
-    [SerializeField] private int _levelY;
+    private Room[,] spawnedRooms;
 
-    private Room[,] _placedRooms;
-
-    private void Awake()
+    private IEnumerator Start()
     {
-        _placedRooms = new Room[_levelX, _levelY];
-        _placedRooms[Center(_levelX), Center(_levelY)] = _startingRoom;
-        
-        PlaceRooms();
-    }
-    private void PlaceRooms()
-    {
-        HashSet<Vector2Int> vacantPlaces = new HashSet<Vector2Int>();
-        for (int i = 0; i < _roomCount; i++)
+        spawnedRooms = new Room[11, 11];
+        spawnedRooms[5, 5] = StartingRoom;
+
+        for (int i = 0; i < 12; i++)
         {
-            PlaceRoom(vacantPlaces);
+            // Ёто вот просто убрать чтобы подземелье генерировалось мгновенно на старте
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            PlaceOneRoom();
         }
     }
-    private void PlaceRoom(HashSet<Vector2Int> vacantPlaces)
+
+    private void PlaceOneRoom()
     {
-        for(int x = 0; x < _placedRooms.GetLength(0); x++)
+        HashSet<Vector2Int> vacantPlaces = new HashSet<Vector2Int>();
+        for (int x = 0; x < spawnedRooms.GetLength(0); x++)
         {
-            for (int y = 0; y < _placedRooms.GetLength(1); y++)
+            for (int y = 0; y < spawnedRooms.GetLength(1); y++)
             {
-                if (_placedRooms[x, y] == null) continue;
+                if (spawnedRooms[x, y] == null) continue;
 
-                int maxX = _placedRooms.GetLength(0) - 1;
-                int maxY = _placedRooms.GetLength(1) - 1;
+                int maxX = spawnedRooms.GetLength(0) - 1;
+                int maxY = spawnedRooms.GetLength(1) - 1;
 
-                if (x > 0 && _placedRooms[x - 1, y] == null) vacantPlaces.Add(new Vector2Int(x - 1, y));
-                if (y > 0 && _placedRooms[x, y - 1] == null) vacantPlaces.Add(new Vector2Int(x , y - 1));
-                if (x > 0 && _placedRooms[x + 1, y] == null) vacantPlaces.Add(new Vector2Int(x + 1, y));
-                if (y > 0 && _placedRooms[x, y + 1] == null) vacantPlaces.Add(new Vector2Int(x, y + 1));
+                if (x > 0 && spawnedRooms[x - 1, y] == null) vacantPlaces.Add(new Vector2Int(x - 1, y));
+                if (y > 0 && spawnedRooms[x, y - 1] == null) vacantPlaces.Add(new Vector2Int(x, y - 1));
+                if (x < maxX && spawnedRooms[x + 1, y] == null) vacantPlaces.Add(new Vector2Int(x + 1, y));
+                if (y < maxY && spawnedRooms[x, y + 1] == null) vacantPlaces.Add(new Vector2Int(x, y + 1));
             }
         }
 
+        // Ёту строчку можно заменить на выбор комнаты с учЄтом еЄ веро€тности, вроде как в ChunksPlacer.GetRandomChunk()
+        Room newRoom = Instantiate(RoomPrefabs[Random.Range(0, RoomPrefabs.Length)]);
 
-        SpawnRandomRoom(_roomPresets, vacantPlaces);
+        int limit = 500;
+        while (limit-- > 0)
+        {
+            // Ёту строчку можно заменить на выбор положени€ комнаты с учЄтом того насколько он далеко/близко от центра,
+            // или сколько у него соседей, чтобы генерировать более плотные, или наоборот, раст€нутые данжи
+            Vector2Int position = vacantPlaces.ElementAt(Random.Range(0, vacantPlaces.Count));
+            newRoom.RotateRandomly();
 
+            if (ConnectToSomething(newRoom, position))
+            {
+                newRoom.transform.position = new Vector3(position.x - 5, 0, position.y - 5) * 12;
+                spawnedRooms[position.x, position.y] = newRoom;
+                return;
+            }
+        }
+
+        Destroy(newRoom.gameObject);
     }
-    private bool ConnectToRoom(Room room, Vector2Int position)
+
+    private bool ConnectToSomething(Room room, Vector2Int p)
     {
-        int maxX = _placedRooms.GetLength(0) - 1;
-        int maxY = _placedRooms.GetLength(1) - 1;
+        int maxX = spawnedRooms.GetLength(0) - 1;
+        int maxY = spawnedRooms.GetLength(1) - 1;
 
-        List<Vector2Int> neighboringRooms = new List<Vector2Int>();
+        List<Vector2Int> neighbours = new List<Vector2Int>();
 
-        if (room.doorUp != null && position.y < maxY && _placedRooms[position.x, position.y + 1]?.doorDown != null) neighboringRooms.Add(Vector2Int.up);
-        if (room.doorDown != null && position.y > maxY && _placedRooms[position.x, position.y - 1]?.doorUp != null) neighboringRooms.Add(Vector2Int.down);
-        if (room.doorRight != null && position.y < maxX && _placedRooms[position.x + 1, position.y]?.doorLeft != null) neighboringRooms.Add(Vector2Int.right);
-        if (room.doorLeft != null && position.y > maxX && _placedRooms[position.x - 1, position.y]?.doorRight != null) neighboringRooms.Add(Vector2Int.left);
+        if (room.doorUp != null && p.y < maxY && spawnedRooms[p.x, p.y + 1]?.doorDown != null) neighbours.Add(Vector2Int.up);
+        if (room.doorDown != null && p.y > 0 && spawnedRooms[p.x, p.y - 1]?.doorUp != null) neighbours.Add(Vector2Int.down);
+        if (room.doorRight != null && p.x < maxX && spawnedRooms[p.x + 1, p.y]?.doorLeft != null) neighbours.Add(Vector2Int.right);
+        if (room.doorLeft != null && p.x > 0 && spawnedRooms[p.x - 1, p.y]?.doorRight != null) neighbours.Add(Vector2Int.left);
 
-        if (neighboringRooms.Count == 0) return false;
+        if (neighbours.Count == 0) return false;
 
-        Vector2Int selectedDirection = neighboringRooms[Random.Range(0, neighboringRooms.Count)];
-        Room selectedRoom = _placedRooms[position.x + selectedDirection.x, position.y + selectedDirection.y];
+        Vector2Int selectedDirection = neighbours[Random.Range(0, neighbours.Count)];
+        Room selectedRoom = spawnedRooms[p.x + selectedDirection.x, p.y + selectedDirection.y];
 
         if (selectedDirection == Vector2Int.up)
         {
@@ -92,39 +105,5 @@ public class RoomPlacer : MonoBehaviour
         }
 
         return true;
-    }
-    private void SpawnRandomRoom(Room[] roomList, HashSet<Vector2Int> vacantPlaces)
-    {
-        int roomNumber = Random.Range(0, _roomPresets.Length);
-        Room NewRoom = Instantiate(roomList[roomNumber]);
-
-        int limit = 500;
-        while (limit-- > 0)
-        {
-            Vector2Int position = vacantPlaces.ElementAt(Random.Range(0, vacantPlaces.Count));
-            NewRoom.RotateRandomly();
-
-            if (ConnectToRoom(NewRoom, position))
-            {
-                Vector3 roomPosition = CalculateRoomPosition(NewRoom, position);
-                NewRoom.transform.position = roomPosition;
-
-                _placedRooms[position.x, position.y] = NewRoom;
-                break;
-            }
-        }
-    }
-
-    private Vector3 CalculateRoomPosition(Room newRoom, Vector2Int position)
-    {
-        int xModifier = newRoom.GetRoomX();
-        int yModifier = newRoom.GetRoomY();
-        return new Vector3((position.x - Center(_levelX)) * xModifier , 0, (position.y - Center(_levelY) * yModifier));
-    }
-
-    private int Center(int x)
-    {
-        x = x / 2;
-        return x;
     }
 }
