@@ -18,7 +18,6 @@ public class CharacterController : MonoBehaviour
         if (characterRigidbody == null)
         {
             characterRigidbody = GetComponent<Rigidbody2D>();
-            //  characterRigidbody.Ge
         }
     }
     private void Update()
