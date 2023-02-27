@@ -23,7 +23,17 @@ public class PlayableCharacter : Character
 
     public override void TakeFix(float fixForce)
     {
-        currentHealth += 1;
+        if(currentHealth < maxHealth)
+        {
+            currentHealth += 1;
+            onHealthChanged?.Invoke(currentHealth);
+        }
+        else
+        {
+            currentHealth = maxHealth;
+            onHealthChanged?.Invoke(currentHealth);
+        }
+        
     }
 
     public override void Die()
@@ -61,8 +71,5 @@ public class PlayableCharacter : Character
             TakeDamage(1);
         }
     }
-
-
-
 #endif
 }
