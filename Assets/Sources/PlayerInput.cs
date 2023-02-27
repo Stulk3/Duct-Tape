@@ -3,31 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CharacterController : MonoBehaviour
+[RequireComponent(typeof(PlayableCharacter))]
+public class PlayerInput : MonoBehaviour
 {
     private Controll _controll;
-    [SerializeField] private Character _character;
-    [SerializeField] private Rigidbody2D characterRigidbody;
-    [SerializeField] private GameObject upperBody;
-    [SerializeField] private GameObject lowerBody;
-    [SerializeField] private float _speed;
+    [SerializeField] private PlayableCharacter _character;
+
+    
     private void Awake()
     {
         _controll = new Controll();
         SubscribeToInputSystem(_controll);
-        if (characterRigidbody == null)
+        if (_character == null)
         {
-            characterRigidbody = GetComponent<Rigidbody2D>();
+            _character = GetComponent<PlayableCharacter>();
         }
     }
-    private void Update()
-    {
-    }
-    private void Move()
+    private void Move(PlayableCharacter playableCharacter)
     {
         Vector2 moveInput = _controll.Player.Move.ReadValue<Vector2>();
 
-        characterRigidbody.velocity = moveInput * _speed;
+        playableCharacter.Move(moveInput);
     }
     private void Look()
     {
@@ -36,17 +32,17 @@ public class CharacterController : MonoBehaviour
 
         Vector3 rotation = mouseWorldPosition - transform.position;
         float rotationZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
-        upperBody.transform.rotation = Quaternion.Euler(0,0,rotationZ);
+        _character.upperBody.transform.rotation = Quaternion.Euler(0,0,rotationZ);
 
     }
-    private void Stop()
+    private void Stop(PlayableCharacter playableCharacter)
     {
-        characterRigidbody.velocity = new Vector2(0,0);
+        playableCharacter.characterRigidbody.velocity = new Vector2(0,0);
     }
     private void SubscribeToInputSystem(Controll controll)
     {
-        controll.Player.Move.performed += context => Move();
-        controll.Player.Move.canceled += context => Stop();
+        controll.Player.Move.performed += context => Move(_character);
+        controll.Player.Move.canceled += context => Stop(_character);
         controll.Player.Look.performed += context => Look();
     }
 
