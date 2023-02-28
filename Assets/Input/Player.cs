@@ -73,10 +73,10 @@ public partial class @Controll : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SwitchMode"",
-                    ""type"": ""Value"",
+                    ""name"": ""SwitchToFightMode"",
+                    ""type"": ""Button"",
                     ""id"": ""de2d1637-639f-4b1a-88a1-4c3e0d7f1b60"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -184,23 +184,12 @@ public partial class @Controll : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9a71f9f9-1c9e-4ef6-a1da-8d7cab9c802c"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SwitchMode"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""689657aa-702b-438c-b59d-b81f7d105731"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SwitchMode"",
+                    ""action"": ""SwitchToFightMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -228,7 +217,7 @@ public partial class @Controll : IInputActionCollection2, IDisposable
         m_Player_Use = m_Player.FindAction("Use", throwIfNotFound: true);
         m_Player_UseOnSelf = m_Player.FindAction("UseOnSelf", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
-        m_Player_SwitchMode = m_Player.FindAction("SwitchMode", throwIfNotFound: true);
+        m_Player_SwitchToFightMode = m_Player.FindAction("SwitchToFightMode", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -293,7 +282,7 @@ public partial class @Controll : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Use;
     private readonly InputAction m_Player_UseOnSelf;
     private readonly InputAction m_Player_Interact;
-    private readonly InputAction m_Player_SwitchMode;
+    private readonly InputAction m_Player_SwitchToFightMode;
     public struct PlayerActions
     {
         private @Controll m_Wrapper;
@@ -303,7 +292,7 @@ public partial class @Controll : IInputActionCollection2, IDisposable
         public InputAction @Use => m_Wrapper.m_Player_Use;
         public InputAction @UseOnSelf => m_Wrapper.m_Player_UseOnSelf;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
-        public InputAction @SwitchMode => m_Wrapper.m_Player_SwitchMode;
+        public InputAction @SwitchToFightMode => m_Wrapper.m_Player_SwitchToFightMode;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -328,9 +317,9 @@ public partial class @Controll : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
-                @SwitchMode.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchMode;
-                @SwitchMode.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchMode;
-                @SwitchMode.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchMode;
+                @SwitchToFightMode.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchToFightMode;
+                @SwitchToFightMode.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchToFightMode;
+                @SwitchToFightMode.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchToFightMode;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -350,9 +339,9 @@ public partial class @Controll : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
-                @SwitchMode.started += instance.OnSwitchMode;
-                @SwitchMode.performed += instance.OnSwitchMode;
-                @SwitchMode.canceled += instance.OnSwitchMode;
+                @SwitchToFightMode.started += instance.OnSwitchToFightMode;
+                @SwitchToFightMode.performed += instance.OnSwitchToFightMode;
+                @SwitchToFightMode.canceled += instance.OnSwitchToFightMode;
             }
         }
     }
@@ -373,6 +362,6 @@ public partial class @Controll : IInputActionCollection2, IDisposable
         void OnUse(InputAction.CallbackContext context);
         void OnUseOnSelf(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnSwitchMode(InputAction.CallbackContext context);
+        void OnSwitchToFightMode(InputAction.CallbackContext context);
     }
 }

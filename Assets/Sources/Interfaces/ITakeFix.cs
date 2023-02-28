@@ -1,4 +1,4 @@
 public interface ITakeFix 
 {
-    void TakeFix(float fixForce);
+    void TakeFix(int fixForce);
 }

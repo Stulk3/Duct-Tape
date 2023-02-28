@@ -7,8 +7,7 @@ public class Enemy : Character
 {
     public override void Die()
     {
-        float sos = speed * 2;
-        
+        Destroy(this.gameObject);
     }
 
     public override void Move(Vector2 moveInput)
@@ -30,7 +29,7 @@ public class Enemy : Character
         }
     }
 
-    public override void TakeFix(float fixForce)
+    public override void TakeFix(int fixForce)
     {
        
     }

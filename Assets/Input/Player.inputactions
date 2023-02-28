@@ -51,10 +51,10 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SwitchMode",
-                    "type": "Value",
+                    "name": "SwitchToFightMode",
+                    "type": "Button",
                     "id": "de2d1637-639f-4b1a-88a1-4c3e0d7f1b60",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -162,23 +162,12 @@
                 },
                 {
                     "name": "",
-                    "id": "9a71f9f9-1c9e-4ef6-a1da-8d7cab9c802c",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwitchMode",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "689657aa-702b-438c-b59d-b81f7d105731",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwitchMode",
+                    "action": "SwitchToFightMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

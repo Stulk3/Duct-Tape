@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    public bool up;
-    public bool down;
-    public bool right;
-    public bool left;
-
-    public int type;
-
+    [SerializeField] private SpawnPoint[] _itemSpawnPoints;
+    [SerializeField] private int _type;
+    [SerializeField] private SpawnPoint _levelProgressionPoint;
+    public int GetRoomType()
+    {
+        return _type;
+    }
     public void DestroyItself()
     {
         Destroy(this.gameObject);
     }
+    public void SpawnItemInRandomPoint(SpawnPoint spawnPoint)
+    {
+        spawnPoint.SpawnRandomObjectFromSet(spawnPoint.ObjectSet());
+    }
+    public void SpawnLevelEntrance()
+    {
+        _levelProgressionPoint.SpawnFirstObjectInSet(); ;
+    }
+    
 }

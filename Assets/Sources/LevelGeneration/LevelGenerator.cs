@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,9 +14,12 @@ namespace LevelGeneration
     public class LevelGenerator : MonoBehaviour
     {
 
-        public Transform[] _startingPositions;
-        public RoomPosition[] _roomPositions;
-        public GameObject[] _roomSets;
+        [SerializeField] private Transform[] _startingPositions;
+        [SerializeField] private RoomPosition[] _roomPositions;
+        [SerializeField] private GameObject[] _roomSets;
+        private Transform _entranceTransform;
+
+        [SerializeField] private List<GameObject> _spawnedRooms;
 
         private Direction _direction;
         private int _directionIndex;
@@ -37,12 +41,10 @@ namespace LevelGeneration
         [SerializeField] private float minY;
         [SerializeField] private float maxY;
 
-        private void Start()
+        private void Awake()
         {
 
-            int randomStartingPosition = Random.Range(0, _startingPositions.Length);
-            transform.position = _startingPositions[randomStartingPosition].position;
-            SpawnRoom(_roomSets[4]);
+            SpawnInitialRoom(_startingPositions);
 
             _directionIndex = Random.Range(1, 6);
         }
@@ -121,7 +123,8 @@ namespace LevelGeneration
                     Collider2D previousRoomCollider = Physics2D.OverlapCircle(transform.position, 1, _roomLayerMask);
                     Debug.Log(previousRoomCollider);
                     Room previousRoom = previousRoomCollider.GetComponent<Room>();
-                    if (previousRoom.type != 4 && previousRoom.type != 2)
+                    int previousRoomType = previousRoom.GetRoomType();
+                    if (previousRoomType != 4 && previousRoomType != 2)
                     {
 
 
@@ -157,6 +160,8 @@ namespace LevelGeneration
                 else
                 {
                     _stopGeneration = true;
+                    SpawnEntrance(_spawnedRooms);
+                    SpawnExit(_spawnedRooms);
 
                     FillEmptyRoomPositions(_roomPositions);
                 }
@@ -167,13 +172,27 @@ namespace LevelGeneration
         {
 
         }
+        private void SpawnInitialRoom(Transform[] startingPositions)
+        {
+            int randomStartingPosition = Random.Range(0, _startingPositions.Length);
+            transform.position = startingPositions[randomStartingPosition].position;
+            _entranceTransform = this.transform;
+            SpawnRoom(_roomSets[4]);
+        }
         private void SpawnRoom(GameObject room)
         {
             Instantiate(room, transform.position, Quaternion.identity);
+            _spawnedRooms.Add(room);
         }
-        private void GenerateNewDirection(Direction direction, int directionIndex)
+        private void SpawnEntrance(List<GameObject> rooms)
         {
-
+            SpawnPoint firstRoom = rooms[0].GetComponent<SpawnPoint>();
+            
+        }
+        private void SpawnExit(List<GameObject> rooms)
+        {
+            SpawnPoint lastRoom = rooms.Last().GetComponent<SpawnPoint>();
+            
         }
         private void FillEmptyRoomPositions(RoomPosition[] roomPositions)
         {
