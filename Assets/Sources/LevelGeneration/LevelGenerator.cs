@@ -1,18 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace LevelGeneration
 {
-    public abstract class Generation
-    {
-        public abstract string Name { get; }
-        public abstract void Process();
-    }
     public class LevelGenerator : MonoBehaviour
     {
+        public static LevelGenerator instance;
 
         [SerializeField] private Transform[] _startingPositions;
         [SerializeField] private RoomPosition[] _roomPositions;
@@ -43,7 +37,7 @@ namespace LevelGeneration
 
         private void Awake()
         {
-
+            if (instance == null) instance = this;
             SpawnInitialRoom(_startingPositions);
 
             _directionIndex = Random.Range(1, 6);
@@ -168,10 +162,6 @@ namespace LevelGeneration
 
             }
         }
-        private void MoveAtDirection(Direction direction)
-        {
-
-        }
         private void SpawnInitialRoom(Transform[] startingPositions)
         {
             int randomStartingPosition = Random.Range(0, _startingPositions.Length);
@@ -187,19 +177,23 @@ namespace LevelGeneration
         private void SpawnEntrance(List<GameObject> rooms)
         {
             SpawnPoint firstRoom = rooms[0].GetComponent<SpawnPoint>();
-            
+
         }
         private void SpawnExit(List<GameObject> rooms)
         {
             SpawnPoint lastRoom = rooms.Last().GetComponent<SpawnPoint>();
-            
+
         }
         private void FillEmptyRoomPositions(RoomPosition[] roomPositions)
         {
             foreach (RoomPosition roomPosition in roomPositions)
             {
-                roomPosition.CheckForEmptyRoomPosition();
+                roomPosition.FillEmptyRoomPositions();
             }
+        }
+        public void AddRoomToSpawnedRooms(GameObject room)
+        {
+            _spawnedRooms.Add(room);
         }
         public enum Direction
         {

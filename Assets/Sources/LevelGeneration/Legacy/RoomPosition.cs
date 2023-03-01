@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LevelGeneration;
 
 public class RoomPosition : MonoBehaviour 
 {
@@ -9,7 +10,7 @@ public class RoomPosition : MonoBehaviour
 
     public GameObject _fillerRoom;
     
-    public void CheckForEmptyRoomPosition()
+    public void FillEmptyRoomPositions()
     {
         Collider2D roomCollider = Physics2D.OverlapCircle(transform.position, 1, _roomLayerMask);
         if (roomCollider == null)
@@ -18,8 +19,9 @@ public class RoomPosition : MonoBehaviour
         }
     }
 
-    private void FillRoomPosition(GameObject roomCollider)
+    private void FillRoomPosition(GameObject room)
     {
-        Instantiate(roomCollider, transform.position, Quaternion.identity);
+        Instantiate(room, transform.position, Quaternion.identity);
+        LevelGenerator.instance.AddRoomToSpawnedRooms(room);
     }
 }

@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Use",
+                    "name": "Attack",
                     "type": "Button",
                     "id": "d6f4dcde-2e00-4270-955e-b99c5b0ab4d4",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseOnSelf",
+                    "name": "Fix",
                     "type": "Button",
                     "id": "db7f3815-1e29-4f86-aaae-0a9ffb6347d8",
                     "expectedControlType": "Button",
@@ -49,15 +49,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "SwitchToFightMode",
-                    "type": "Button",
-                    "id": "de2d1637-639f-4b1a-88a1-4c3e0d7f1b60",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -134,7 +125,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Use",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -145,7 +136,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseOnSelf",
+                    "action": "Fix",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -157,17 +148,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "689657aa-702b-438c-b59d-b81f7d105731",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwitchToFightMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
