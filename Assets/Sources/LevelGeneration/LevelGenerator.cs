@@ -11,9 +11,13 @@ namespace LevelGeneration
         [SerializeField] private Transform[] _startingPositions;
         [SerializeField] private RoomPosition[] _roomPositions;
         [SerializeField] private GameObject[] _roomSets;
+        [SerializeField] private int _itemsCount;
         private Transform _entranceTransform;
 
+        [SerializeField] private GameObject _player;
+
         [SerializeField] private List<GameObject> _spawnedRooms;
+        [SerializeField] private List<SpawnPoint> _itemsSpawnPoints = new List<SpawnPoint>();
 
         private Direction _direction;
         private int _directionIndex;
@@ -156,8 +160,8 @@ namespace LevelGeneration
                     _stopGeneration = true;
                     SpawnEntrance(_spawnedRooms);
                     SpawnExit(_spawnedRooms);
-
                     FillEmptyRoomPositions(_roomPositions);
+                    SpawnItems(_itemsCount);
                 }
 
             }
@@ -167,6 +171,7 @@ namespace LevelGeneration
             int randomStartingPosition = Random.Range(0, _startingPositions.Length);
             transform.position = startingPositions[randomStartingPosition].position;
             _entranceTransform = this.transform;
+            _player.transform.position = _entranceTransform.position;
             SpawnRoom(_roomSets[4]);
         }
         private void SpawnRoom(GameObject room)
@@ -182,6 +187,29 @@ namespace LevelGeneration
         private void SpawnExit(List<GameObject> rooms)
         {
             SpawnPoint lastRoom = rooms.Last().GetComponent<SpawnPoint>();
+
+        }
+        private void SpawnItems(int count)
+        {
+            
+            List<Room> rooms = new List<Room>();
+            for (int i = 0; i < _spawnedRooms.Count; i++)
+            {
+                if (_spawnedRooms[i].TryGetComponent<Room>(out Room room))
+                {
+                    rooms.Add(room);
+                }
+            }
+            foreach(Room room in rooms)
+            {
+                 _itemsSpawnPoints.AddRange(room.GetItemSpawnPoints());
+            }
+
+            for (int i = 0; i < _itemsCount; i++)
+            {
+                int randomIndex = Random.Range(0, _itemsSpawnPoints.Count);
+                _itemsSpawnPoints[randomIndex].SpawnFirstObjectInSet();
+            }
 
         }
         private void FillEmptyRoomPositions(RoomPosition[] roomPositions)

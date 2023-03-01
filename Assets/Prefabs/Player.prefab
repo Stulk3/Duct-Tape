@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 6175646817696662319}
   - component: {fileID: 6175646817696662316}
   - component: {fileID: 3651410271602538441}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 6175646817696662312}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5335467984277579015}
@@ -88,7 +88,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6175646817696662319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,8 +107,8 @@ MonoBehaviour:
   speed: 5
   damageMultiplier: 0
   characterRigidbody: {fileID: 6175646817696662318}
-  _tapeCount: 6
-  upperBody: {fileID: 4827529495306325313}
+  _tapeCount: 0
+  upperBody: {fileID: 4038338491507979174}
   lowerBody: {fileID: 6175646817696662312}
 --- !u!114 &6175646817696662316
 MonoBehaviour:
@@ -147,7 +147,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.25, y: 1.25}
+  m_Size: {x: 1.4, y: 1.4}
   m_EdgeRadius: 0
 --- !u!1001 &2922460088772136636
 PrefabInstance:
@@ -245,10 +245,5 @@ PrefabInstance:
 --- !u!4 &4455302134455043318 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1538753707540122186, guid: aa678d6e397f5064da208a22d8bb159c, type: 3}
-  m_PrefabInstance: {fileID: 2922460088772136636}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4827529495306325313 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7669768189083993085, guid: aa678d6e397f5064da208a22d8bb159c, type: 3}
   m_PrefabInstance: {fileID: 2922460088772136636}
   m_PrefabAsset: {fileID: 0}

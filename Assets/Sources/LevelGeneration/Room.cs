@@ -23,5 +23,9 @@ public class Room : MonoBehaviour
     {
         _levelProgressionPoint.SpawnFirstObjectInSet(); ;
     }
+    public SpawnPoint[] GetItemSpawnPoints()
+    {
+        return _itemSpawnPoints;
+    }
     
 }
