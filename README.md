@@ -21,6 +21,13 @@ PC, 12+
        src="https://github.com/Stulk3/Duct-Tape/blob/main/Диаграмма%20Механик.png?raw=true"
        alt="Полная диаграммма механик игры">
 </details>
+
+- [Генерация уровней](https://github.com/Stulk3/Duct-Tape/tree/main/Assets/Sources/LevelGeneration)
+- [Использование New Input System](https://github.com/Stulk3/Duct-Tape/tree/main/Assets/Sources/Input)
+- [UI](https://github.com/Stulk3/Duct-Tape/tree/main/Assets/Sources/UI)
+- [Механики персонажей](https://github.com/Stulk3/Duct-Tape/tree/main/Assets/Sources/Character%20Mechanics)
+- [Механика предметов](https://github.com/Stulk3/Duct-Tape/tree/main/Assets/Sources/Items)
+
 Игра предствляет собой Rogue-like, где главный герой ходит по комнатам, наполненным врагами и различным предметами. В таких комнатах он благодаря своим способностям сражается с ними, используя 3 режима скотча:
 - Хлыст. В нём T4-PE использует клейкую ленту как хлыст и ударяет на среднее расстояние. Основная атака для сражений с врагами. Помимо атаки может использоваться для притягивания предметов в комнатах.
 - Обертка. В нём T4-PE использует скотч для того чтобы обматывать различные предметы. Это действие обездвиживает врагов на какое-то время, однако вместе с тем исцеляет их. В комнатах игроку будут попадаться различные сломанные вещи, которые можно будет починить используя этот режим.
