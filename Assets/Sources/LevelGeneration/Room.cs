@@ -19,7 +19,7 @@ public class Room : MonoBehaviour
     {
         spawnPoint.SpawnRandomObjectFromSet(spawnPoint.ObjectSet());
     }
-    public void SpawnLevelEntrance()
+    public void SpawnLevelProgression()
     {
         _levelProgressionPoint.SpawnFirstObjectInSet(); ;
     }

@@ -8,11 +8,19 @@ namespace LevelGeneration
     {
         public static LevelGenerator instance;
 
+
+
         [SerializeField] private Transform[] _startingPositions;
         [SerializeField] private RoomPosition[] _roomPositions;
-        [SerializeField] private GameObject[] _roomSets;
         [SerializeField] private int _itemsCount;
         private Transform _entranceTransform;
+
+        private GameObject[] _allRooms;
+        private GameObject[] _LeftToRightRooms;
+        private GameObject[] _LeftRightUpRooms;
+        private GameObject[] _LeftRightDownRooms;
+        private GameObject[] _LeftRighUpDownRooms;
+        private GameObject[] _fillerRooms;
 
         [SerializeField] private GameObject _player;
 
@@ -42,9 +50,17 @@ namespace LevelGeneration
         private void Awake()
         {
             if (instance == null) instance = this;
-            SpawnInitialRoom(_startingPositions);
 
+        }
+        private void Start()
+        {
+            _LeftToRightRooms = LevelGeneratingDatabase.GetLeftToRightRooms();
+            _LeftRightUpRooms = LevelGeneratingDatabase.GetLeftRightUpRooms();
+            _LeftRightDownRooms = LevelGeneratingDatabase.GetLeftRightDownRooms();
+            _LeftRighUpDownRooms = LevelGeneratingDatabase.GetLeftRighUpDownRooms();
+            _fillerRooms = LevelGeneratingDatabase.GetFillerRooms();
             _directionIndex = Random.Range(1, 6);
+            SpawnInitialRoom(_startingPositions);
         }
 
         private void Update()
@@ -73,9 +89,9 @@ namespace LevelGeneration
                     Vector2 pos = new Vector2(transform.position.x + _moveIncrement, transform.position.y);
                     transform.position = pos;
 
-                    int randomRoomIndex = Random.Range(1, 4);
-                    SpawnRoom(_roomSets[randomRoomIndex]);
-
+                    //int randomRoomIndex = Random.Range(1, 4);
+                    //SpawnRoom(_roomSets[randomRoomIndex]);
+                    SpawnRandomRoomFromSet(_LeftRightUpRooms, _LeftRightDownRooms, _LeftRighUpDownRooms);
 
                     _directionIndex = Random.Range(1, 6);
                     if (_directionIndex == 3)
@@ -101,8 +117,9 @@ namespace LevelGeneration
                     Vector2 pos = new Vector2(transform.position.x - _moveIncrement, transform.position.y);
                     transform.position = pos;
 
-                    int randomRoomIndex = Random.Range(1, 4);
-                    Instantiate(_roomSets[randomRoomIndex], transform.position, Quaternion.identity);
+                    //int randomRoomIndex = Random.Range(1, 4);
+                    //SpawnRoom(_roomSets[randomRoomIndex]);
+                    SpawnRandomRoomFromSet(_LeftRightUpRooms, _LeftRightDownRooms, _LeftRighUpDownRooms);
 
                     _directionIndex = Random.Range(3, 6);
                 }
@@ -129,18 +146,21 @@ namespace LevelGeneration
 
                         if (_downCounter >= 2)
                         {
-                            previousRoom.DestroyItself();
-                            SpawnRoom(_roomSets[4]);
+                            DestroyRoom(previousRoom);
+                            //previousRoom.DestroyItself();
+                            SpawnRandomRoomFromSet(_LeftRighUpDownRooms);
                         }
                         else
                         {
-                            previousRoom.DestroyItself();
-                            int randRoomDownOpening = Random.Range(2, 5);
-                            if (randRoomDownOpening == 3)
-                            {
-                                randRoomDownOpening = 2;
-                            }
-                            SpawnRoom(_roomSets[randRoomDownOpening]);
+                            DestroyRoom(previousRoom);
+                            //previousRoom.DestroyItself();
+                            //int randRoomDownOpening = Random.Range(2, 5);
+                            //if (randRoomDownOpening == 3)
+                            //{
+                            //    randRoomDownOpening = 2;
+                            //}
+                            SpawnRandomRoomFromSet(_LeftRightDownRooms, _LeftRighUpDownRooms);
+                            //SpawnRoom(_roomSets[randRoomDownOpening]);
                         }
 
                     }
@@ -150,15 +170,16 @@ namespace LevelGeneration
                     Vector2 pos = new Vector2(transform.position.x, transform.position.y - _moveIncrement);
                     transform.position = pos;
 
-                    int randomRoomIndex = Random.Range(3, 5);
-                    Instantiate(_roomSets[randomRoomIndex], transform.position, Quaternion.identity);
+                    //int randomRoomIndex = Random.Range(3, 5);
+                    //Instantiate(_roomSets[randomRoomIndex], transform.position, Quaternion.identity);
+
+                    SpawnRandomRoomFromSet(_LeftRightDownRooms, _LeftRighUpDownRooms);
 
                     _directionIndex = Random.Range(1, 6);
                 }
                 else
                 {
                     _stopGeneration = true;
-                    SpawnEntrance(_spawnedRooms);
                     SpawnExit(_spawnedRooms);
                     FillEmptyRoomPositions(_roomPositions);
                     SpawnItems(_itemsCount);
@@ -172,21 +193,66 @@ namespace LevelGeneration
             transform.position = startingPositions[randomStartingPosition].position;
             _entranceTransform = this.transform;
             _player.transform.position = _entranceTransform.position;
-            SpawnRoom(_roomSets[4]);
+            
+            //SpawnRoom(initialRoomSet[4]);
+            SpawnRandomRoomFromSet(_LeftRighUpDownRooms);
         }
         private void SpawnRoom(GameObject room)
         {
             Instantiate(room, transform.position, Quaternion.identity);
             _spawnedRooms.Add(room);
         }
-        private void SpawnEntrance(List<GameObject> rooms)
+        private void SpawnRandomRoomFromSet(GameObject[] set)
         {
-            SpawnPoint firstRoom = rooms[0].GetComponent<SpawnPoint>();
+            int randomIndex = Random.Range(0, set.Length);
+            GameObject spawnedRoom = Instantiate(set[randomIndex], transform.position, Quaternion.identity);
+            _spawnedRooms.Add(spawnedRoom);
+        }
+        private void SpawnRandomRoomFromSet(GameObject[] set1, GameObject[] set2)
+        {
+            GameObject[] overallSet = set1.Concat(set2).ToArray();
+            int randomIndex = Random.Range(0, overallSet.Length);
+            GameObject spawnedRoom = Instantiate(overallSet[randomIndex], transform.position, Quaternion.identity);
+            _spawnedRooms.Add(spawnedRoom);
+        }
+        private void SpawnRandomRoomFromSet(GameObject[] set1, GameObject[] set2, GameObject[] set3)
+        {
+            GameObject[] overallSet = set1.Concat(set2).Concat(set3).ToArray();
+            int randomIndex = Random.Range(0, overallSet.Length);
+            GameObject spawnedRoom = Instantiate(overallSet[randomIndex], transform.position, Quaternion.identity);
+            _spawnedRooms.Add(spawnedRoom);
+        }
+        private void DestroyRoom(Room room)
+        {
+            room.DestroyItself();
+            _spawnedRooms.Remove(room.gameObject);
+        }
+        private void SpawnRandomRoom()
+        {
+            int randomType = Random.Range(0, 4);
+            switch (randomType)
+            {
+                case 0:
+                    SpawnRandomRoomFromSet(_LeftToRightRooms);
+                break;
 
+                case 1:
+                    SpawnRandomRoomFromSet(_LeftRightUpRooms);
+                break;
+
+                case 2:
+                    SpawnRandomRoomFromSet(_LeftRightDownRooms);
+                break;
+
+                case 3:
+                    SpawnRandomRoomFromSet(_LeftRighUpDownRooms);
+                break;
+            }
         }
         private void SpawnExit(List<GameObject> rooms)
         {
-            SpawnPoint lastRoom = rooms.Last().GetComponent<SpawnPoint>();
+            Room lastRoom = rooms.Last().GetComponent<Room>();
+            lastRoom.GetComponent<Room>().SpawnLevelProgression();
 
         }
         private void SpawnItems(int count)
@@ -209,6 +275,7 @@ namespace LevelGeneration
             {
                 int randomIndex = Random.Range(0, _itemsSpawnPoints.Count);
                 _itemsSpawnPoints[randomIndex].SpawnFirstObjectInSet();
+                _itemsSpawnPoints.RemoveAt(randomIndex);
             }
 
         }

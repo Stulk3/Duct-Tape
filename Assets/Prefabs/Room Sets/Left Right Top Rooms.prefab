@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c605ca7e50da4d641baf174b1e5ceb56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pointType: 5
   _objectSet:
   - {fileID: 7058049858962846621, guid: 37ef98917194232439e1ed9d9cee55fe, type: 3}

@@ -11,10 +11,16 @@ public class PlayableCharacter : Character
 
     public event Action<int> onHealthChanged;
     public event Action<int> onTapeChanged;
+    public event Action<bool> onInteracted;
+
     private void Start()
     {
         onHealthChanged?.Invoke(currentHealth);
         onTapeChanged?.Invoke(_tapeCount);
+    }
+    public int GetTapeCount()
+    {
+        return _tapeCount;
     }
     public override void Move(Vector2 moveInput)
     {
@@ -95,12 +101,6 @@ public class PlayableCharacter : Character
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             TakeFix(2);
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Item item = ItemDatabase.instance.GetRandomItemFromAvailableItems();
-            Debug.Log(item);
-            TakeItem(item);
         }
     }
 #endif

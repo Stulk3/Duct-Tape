@@ -8,8 +8,9 @@ public class PlayerInput : MonoBehaviour
 {
     private Controll _controll;
     [SerializeField] private PlayableCharacter _character;
+    private List<IInteractable> _interactableEntity = new List<IInteractable>();
+    private List<ITakeFix> _fixableEntity = new List<ITakeFix>(); 
 
-    
     private void Awake()
     {
         _controll = new Controll();
@@ -39,11 +40,27 @@ public class PlayerInput : MonoBehaviour
     {
         playableCharacter.characterRigidbody.velocity = new Vector2(0,0);
     }
+    private void Interact(IInteractable interactableEntity)
+    {
+        if(interactableEntity != null)
+        {
+            interactableEntity.Interact();
+        }
+    }
+    private void Fix(ITakeFix fixableEntity)
+    {
+        if(fixableEntity != null && _character.GetTapeCount() >= 1)
+        {
+            fixableEntity.TakeFix(1);
+        }
+    }
     private void SubscribeToInputSystem(Controll controll)
     {
         controll.Player.Move.performed += context => Move(_character);
         controll.Player.Move.canceled += context => Stop(_character);
         controll.Player.Look.performed += context => Look();
+        controll.Player.Interact.performed += context => Interact(_interactableEntity[0]);
+        controll.Player.Fix.performed += context => Fix(_fixableEntity[0]);
     }
 
     private void OnEnable()
@@ -53,5 +70,16 @@ public class PlayerInput : MonoBehaviour
     private void OnDisable()
     {
         _controll.Disable();
+    }
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        _interactableEntity.Add(collider.gameObject.GetComponent<IInteractable>());
+        _fixableEntity.Add(collider.gameObject.GetComponent<ITakeFix>());
+  
+    }
+    private void OnTriggerExit2D(Collider2D collider)
+    {
+        _interactableEntity.Remove(collider.gameObject.GetComponent<IInteractable>());
+        _fixableEntity.Remove(collider.gameObject.GetComponent<ITakeFix>());
     }
 }

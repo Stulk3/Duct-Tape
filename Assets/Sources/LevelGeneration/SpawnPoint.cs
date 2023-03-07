@@ -6,14 +6,19 @@ public class SpawnPoint : MonoBehaviour
 {
     [SerializeField] private SpawnPointType _pointType;
     [SerializeField] private GameObject[] _objectSet;
-    private GameObject _generatedObject;
+    [SerializeField] private GameObject _generatedObject;
+    private SpawnPoint _levelProgression;
     
     private void Start()
     {
-        if (_pointType == SpawnPointType.Tile)
+        if (_pointType == SpawnPointType.Tile || _pointType == SpawnPointType.Room)
         {
             SpawnRandomObjectFromSet(_objectSet);
         }
+    }
+    public void SpawnExit()
+    {
+        _levelProgression.SpawnFirstObjectInSet();
     }
     public GameObject GetGeneratedObject()
     {
@@ -22,6 +27,11 @@ public class SpawnPoint : MonoBehaviour
     public void SpawnFirstObjectInSet()
     {
         _generatedObject = Instantiate(_objectSet[0], transform.position, Quaternion.identity);
+        Debug.Log(_generatedObject);
+    }
+    public void DestroyItself()
+    {
+        Destroy(this.gameObject);
     }
     public void SpawnRandomObjectFromSet(GameObject[] objectSet)
     {
@@ -33,6 +43,7 @@ public class SpawnPoint : MonoBehaviour
     public void SpawnObjectFromSet(int index)
     {
         _generatedObject = Instantiate(_objectSet[index], transform.position, Quaternion.identity);
+       
     }
     public GameObject[] ObjectSet()
     {
@@ -40,6 +51,6 @@ public class SpawnPoint : MonoBehaviour
     }
     public enum SpawnPointType
     {
-        Tile,Item,Enemy,InteractiveEntity, LevelProgression
+        Tile,Item,Enemy,InteractiveEntity, LevelProgression,Room
     }
 }
