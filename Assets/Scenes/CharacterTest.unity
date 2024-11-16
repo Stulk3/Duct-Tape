@@ -448,6 +448,10 @@ PrefabInstance:
       propertyPath: upperBody
       value: 
       objectReference: {fileID: 806518358}
+    - target: {fileID: 6175646817696662319, guid: c0f4d890c8205794ab21597493728022, type: 3}
+      propertyPath: _tapeCount
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6175646817696662314, guid: c0f4d890c8205794ab21597493728022, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c0f4d890c8205794ab21597493728022, type: 3}
